@@ -1,0 +1,12 @@
+{
+  "pages":[
+    "pages/index/index",
+    "pages/logs/logs"
+  ],
+  "window":{
+    "backgroundTextStyle":"light",
+    "navigationBarBackgroundColor": "#E14848",
+    "navigationBarTitleText": "Simple Calendar",
+    "navigationBarTextStyle":"white"
+  }
+}

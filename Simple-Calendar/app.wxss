@@ -1,0 +1,6 @@
+page {
+  font-family: 'microsoft yahei ui';
+  font-size: 28rpx;
+  background-color: #1D1D26;
+  color: #FFF;
+}
