@@ -1,19 +1,61 @@
+import DataService from  '../../services/DataService';
+
+// let t = DataService.findAll();
+// console.log( t );
+
+const LEVEL = {
+  normal: 1,
+  warning: 2,
+  danger: 3
+};
 
 Page( {
   data: {
     showMonth: {},
     data: {},
     selectDateText: '',
-    pickerDateValue: ''
+    pickerDateValue: '',
+
+    isSelectMode: false,
+    isMaskShow: false,
+    isEditMode: false,
+    isSelectLevelASShow: false,
+
+    // modal
+    isModalShow: false,
+    modalMsg: '',
+
+    //事项等级数据
+    levelSelectedValue: LEVEL.normal,
+    levelSelectData: [ LEVEL.normal, LEVEL.warning, LEVEL.danger ],
+
+    // updatePanel 数据
+    updatePanelTop: 10000,
+    updatePanelAnimationData: {},
+    todoInputValue: '',
+
+    // 事项列表
+    itemList: []
   },
 
   onLoad: function() {
+    let _this = this;
+    wx.getSystemInfo( {
+      success: ( data ) => {
+        _this.setData( {
+          updatePanelTop: data.windowHeight,
+        });
+      }
+    });
     changeDate.call( this );
+  },
+
+  onReady: function() {
+    loadItemListData.call( this );
   },
 
   datePickerChangeEvent: function( e ) {
     let date = new Date( Date.parse( e.detail.value ) );
-    //console.log(date.getFullYear(), date.getMonth(), date.getDate());
     changeDate.call( this, new Date( date.getFullYear(), date.getMonth(), 1 ) );
   },
 
@@ -28,24 +70,128 @@ Page( {
     let year = dataset.year,
       month = dataset.month,
       date = dataset.date,
-      data = this.data.data,
-      dates,
-      tmp,
-      selectDateText;
+      data = this.data.data
+      // dates,
+      // tmp,
+      // selectDateText
+      ;
 
-    data[ 'selected' ][ 'year' ] = year;
-    data[ 'selected' ][ 'month' ] = month;
-    data[ 'selected' ][ 'date' ] = date;
+    // data[ 'selected' ][ 'year' ] = year;
+    // data[ 'selected' ][ 'month' ] = month;
+    // data[ 'selected' ][ 'date' ] = date;
 
-    selectDateText = year + '年' + month + '月' + date + '日';
-    this.setData( { data: data, selectDateText: selectDateText });
+    // selectDateText = year + '年' + month + '月' + date + '日';
+    // this.setData( { data: data, selectDateText: selectDateText });
 
     if( !( data[ 'currentYear' ] == year && data[ 'currentMonth' ] == month && data[ 'currentDate' ] == date ) ) {
       changeDate.call( this, new Date( year, parseInt( month ) - 1, date ) );
     }
 
+  },
+
+  showUpdatePanelEvent: function() {
+    showUpdatePanel.call( this );
+  },
+
+  closeUpdatePanelEvent: function() {
+    closeUpdatePanel.call( this );
+  },
+  editClickEvent: function() {
+    this.setData( { isEditMode: true });
+  },
+  cancelEditClickEvent: function() {
+    this.setData( { isEditMode: false });
+  },
+
+  showSelectLevelEvent: function() {
+    this.setData( { isSelectLevelASShow: true });
+  },
+
+  // 事项内容文本框变化事件
+  todoInputChangeEvent: function( e ) {
+    let value = e.detail.value;
+    this.setData( { todoInputValue: value });
+  },
+
+  // 选择事项等级事件
+  levelClickEvent: function( e ) {
+    let level = e.currentTarget.dataset.level;
+    this.setData( { levelSelectedValue: level });
+  },
+
+  // 保存事项数据
+  saveDataEvent: function() {
+    let todoValue = this.data.todoInputValue;
+    let levelValue = this.data.levelSelectedValue;
+    let showYear = this.data.data.showYear;
+    let showMonth = this.data.data.showMonth;
+    let showDate = this.data.data.showDate;
+    if( todoValue != '' && levelValue ) {
+      new DataService( {
+        content: todoValue,
+        level: levelValue,
+        date: new Date( Date.parse( showYear + '-' + showMonth + '-' + showDate ) ).getTime()
+      }).save();
+      closeUpdatePanel.call( this );
+      loadItemListData.call( this );
+    } else {
+      this.setData( {
+        isModalShow: true,
+        isMaskShow: true,
+        modalMsg: '请填写事项内容'
+      });
+    }
+  },
+
+  listItemClickEvent: function( e ) {
+    let isEditMode = this.data.isEditMode;
+    if( !isEditMode ) return;
+
+    let id = e.currentTarget.dataset.id;
+    let data = this.data.itemList || [];
+    let index = data.findIndex(( item ) => {
+      return item[ '_id' ] == id;
+    });
+    if( index >= 0 ) {
+      data[ index ][ 'active' ] = !data[ index ][ 'active' ];
+      this.setData( { itemList: data });
+    }
+  },
+
+  // 提示模态窗口显示
+  closeModalEvent: function() {
+    this.setData( { isModalShow: false, isMaskShow: false });
   }
 });
+
+function showUpdatePanel() {
+  let animation = wx.createAnimation( {
+    duration: 600
+  });
+  animation.translateY( '-100%' ).step();
+  this.setData( {
+    updatePanelAnimationData: animation.export()
+  });
+}
+
+function closeUpdatePanel() {
+  let animation = wx.createAnimation( {
+    duration: 600
+  });
+  animation.translateY( '100%' ).step();
+  this.setData( {
+    updatePanelAnimationData: animation.export()
+  });
+}
+
+function loadItemListData() {
+  let year = this.data.data.showYear;
+  let month = this.data.data.showMonth;
+  let date = this.data.data.showDate;
+  let data = DataService.findByDate( new Date( Date.parse( year + '-' + month + '-' + date ) ) );
+  console.log( data );
+  this.setData( { itemList: data });
+}
 
 /**
  * 变更日期数据
@@ -106,8 +252,9 @@ function changeDate( targetDate ) {
     showMonthLastDateDay = 0;
 
   //如果天数不够6行，则补充完整
-  if( showMonthDateCount + beforeDayCount + afterDayCount <= 35 )
-    afterDayCount += 7;
+  let tDay = showMonthDateCount + beforeDayCount + afterDayCount;
+  if( tDay <= 35 )
+    afterDayCount += ( 42 - tDay );
 
   let selected = this.data.data[ 'selected' ] || {};
 
@@ -141,7 +288,8 @@ function changeDate( targetDate ) {
 
   for( let cIdx = 1;cIdx <= showMonthDateCount;cIdx++ ) {
     dates.push( {
-      active: ( selected[ 'year' ] == showYear && selected[ 'month' ] == showMonth && selected[ 'date' ] == cIdx ), //选中状态判断
+      active: showDate == cIdx,
+      //active: ( selected[ 'year' ] == showYear && selected[ 'month' ] == showMonth && selected[ 'date' ] == cIdx ), //选中状态判断
       year: showYear,
       month: showMonth,
       date: cIdx

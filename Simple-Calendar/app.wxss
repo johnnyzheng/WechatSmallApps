@@ -4,3 +4,48 @@ page {
   background-color: #1D1D26;
   color: #FFF;
 }
+
+/*float action*/
+.float-container {
+  position: fixed;
+  bottom: 40rpx;
+  right: 40rpx;
+  overflow: hidden;
+}
+.float-action {
+  width: 100rpx;
+  height: 100rpx;
+  border-radius: 50%;
+  box-shadow: 2px 2px 10px rgba(0, 0, 0, .5);
+  background: #E14848;
+  z-index: 100;
+  text-align: center;
+  opacity: .8;
+  margin-left: 40rpx;
+  float: right;
+}
+.float-action image {
+    width: 60rpx;
+    height: 60rpx;
+    margin-top: 20rpx;
+}
+
+.bg-normal {
+  background: #46BC62;
+}
+.bg-warning {
+background: #ECAA5B;
+}
+.bg-danger {
+background: #E14848;
+}
+
+.border-normal {
+  border: 2rpx solid #46BC62;
+}
+.border-warning {
+  border: 2rpx solid #ECAA5B;
+}
+.border-danger {
+  border: 2rpx solid #E14848;
+}

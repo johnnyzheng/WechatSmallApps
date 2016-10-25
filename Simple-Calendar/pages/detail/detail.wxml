@@ -1,0 +1,7 @@
+<view class="wrapper">
+
+    <form>
+        <input class="og-control" placeholder-class="placeholder-class" placeholder="这是一个可以自动聚焦的input" auto-focus/>
+    </form>
+
+</view>

@@ -1,0 +1,10 @@
+.placeholder-class {
+    font-family: 'microsoft yahei ui';
+    color: #888
+}
+input {
+    font-family: 'microsoft yahei ui';
+    background: #333;
+    font-size: 30rpx;
+    padding: 10rpx 20rpx;
+}

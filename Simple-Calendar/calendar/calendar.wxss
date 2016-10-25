@@ -1,7 +1,7 @@
 .og-calendar {
     background-color: #1D1D26;
     color: #FFF;
-    padding: 0 10rpx 40rpx 10rpx;
+    padding: 0 0 40rpx 0;
 }
 .og-calendar .header {
     position: relative;
@@ -9,6 +9,7 @@
     line-height: 120rpx;
     font-size: 35rpx;
     text-align: center;
+    background: #E14848
 }
 .og-calendar .header .month-pre,
 .og-calendar .header .month-next {
@@ -16,6 +17,9 @@
     top: 0;
     width: 120rpx;
     height: 120rpx
+}
+.og-calendar .header .btn:active {
+    background: #D64343
 }
 .og-calendar .header .month-pre {
     left: 0;
