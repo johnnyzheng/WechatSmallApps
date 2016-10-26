@@ -25,6 +25,14 @@
     padding: 20rpx 0;
     min-height: 100rpx;
 }
+
+.common-list .header {
+    border-top: 2rpx solid #333;
+    margin: 0 40rpx;  
+    padding: 20rpx 0;
+    color: #AAA
+}
+
 .common-list .item .icon {
     position: absolute;
     left: 0;
@@ -61,6 +69,7 @@
     font-size: 30rpx;
     margin-top: 30rpx;
 }
+
 
 .mask {
     position: fixed;
@@ -129,20 +138,15 @@
     margin-left: 20rpx;
 }
 
-action-sheet {
-    margin: 0 20rpx;
-}
+/*action sheet*/
 .actionItem  {
-    display: flex;
+    color: #555;
     font-size: 36rpx;
-    justify-content: center;
-    align-items: center;
-    background: #1D1D26;
-    color: #FFF;
 }
-.actionItem icon {
-    margin-right: 20rpx;
+.actionItem.cancel {
+    color: #888
 }
+
 
 /*update panel style*/
 .updatePanel {

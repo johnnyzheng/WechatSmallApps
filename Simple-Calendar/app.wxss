@@ -20,9 +20,12 @@ page {
   background: #E14848;
   z-index: 100;
   text-align: center;
-  opacity: .8;
+  opacity: .5;
   margin-left: 40rpx;
   float: right;
+}
+.float-action:active {
+  opacity: 1
 }
 .float-action image {
     width: 60rpx;
@@ -31,21 +34,35 @@ page {
 }
 
 .bg-normal {
-  background: #46BC62;
+  background: #46BC62 !important;
 }
 .bg-warning {
-background: #ECAA5B;
+  background: #ECAA5B !important;
 }
 .bg-danger {
-background: #E14848;
+  background: #E14848 !important;
+}
+
+.color-primary {
+  color: #46BC62 !important;
+}
+.color-warning {
+  color: #ECAA5B !important;
+}
+.color-danger {
+  color: #E14848 !important;
 }
 
 .border-normal {
-  border: 2rpx solid #46BC62;
+  border: 2rpx solid #46BC62 !important;
 }
 .border-warning {
-  border: 2rpx solid #ECAA5B;
+  border: 2rpx solid #ECAA5B !important;
 }
 .border-danger {
-  border: 2rpx solid #E14848;
+  border: 2rpx solid #E14848 !important;
+}
+
+.text-center {
+  text-align: center !important;
 }

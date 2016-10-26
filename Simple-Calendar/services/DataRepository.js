@@ -39,6 +39,20 @@ class DataRepository {
         }
     }
 
+    static removeRange( ...range ) {
+        if( !range ) return;
+        let data = DataRepository.findAllData();
+        if( !data ) return;
+        for( let rIdx = 0, rLen = range.length;rIdx < len;rIdx++ ) {
+            for( let idx = 0, len = data.length;i < len;i++ ) {
+                if( data[ i ] && data[ i ][ '_id' ] === range[ rIdx ] ) {
+                    delete data[ i ];
+                    break;
+                }
+            }
+        }
+    }
+
     /**
      * 更新数据
      * @param {Object} data 数据

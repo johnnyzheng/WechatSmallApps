@@ -96,11 +96,25 @@ Page( {
   closeUpdatePanelEvent: function() {
     closeUpdatePanel.call( this );
   },
+
   editClickEvent: function() {
     this.setData( { isEditMode: true });
   },
+
+  // action-sheet隐藏
+  actionSheetChange: function() {
+    this.setData({isSelectLevelASShow: false});
+  },
+
+  // 事项列表项长按动作事件
+  listItemLongTapEvent: function(e) {
+    this.setData({isSelectLevelASShow: true});
+  },
+
+  //取消编辑事件
   cancelEditClickEvent: function() {
     this.setData( { isEditMode: false });
+    resetItemListDataCheck.call( this );
   },
 
   showSelectLevelEvent: function() {
@@ -130,17 +144,18 @@ Page( {
       new DataService( {
         content: todoValue,
         level: levelValue,
-        date: new Date( Date.parse( showYear + '-' + showMonth + '-' + showDate ) ).getTime()
+        date: new Date( Date.parse( [showYear, showMonth, showDate].join('-') ) ).getTime()
       }).save();
       closeUpdatePanel.call( this );
       loadItemListData.call( this );
     } else {
-      this.setData( {
-        isModalShow: true,
-        isMaskShow: true,
-        modalMsg: '请填写事项内容'
-      });
+      showModal.call( this, '请填写事项内容' );
     }
+  },
+
+  //批量删除事件
+  removeRangeTapEvent: function() {
+
   },
 
   listItemClickEvent: function( e ) {
@@ -153,17 +168,25 @@ Page( {
       return item[ '_id' ] == id;
     });
     if( index >= 0 ) {
-      data[ index ][ 'active' ] = !data[ index ][ 'active' ];
+      data[ index ][ 'checked' ] = !data[ index ][ 'checked' ];
       this.setData( { itemList: data });
     }
   },
 
-  // 提示模态窗口显示
+  //提示模态窗口关闭事件
   closeModalEvent: function() {
-    this.setData( { isModalShow: false, isMaskShow: false });
+    closeModal.call( this );
   }
 });
 
+
+
+
+
+
+/**
+ * 显示事项数据添加更新面板
+ */
 function showUpdatePanel() {
   let animation = wx.createAnimation( {
     duration: 600
@@ -174,6 +197,32 @@ function showUpdatePanel() {
   });
 }
 
+/**
+ * 显示模态窗口
+ * @param {String} msg 显示消息
+ */
+function showModal( msg ) {
+  this.setData( {
+    isModalShow: true,
+    isMaskShow: true,
+    modalMsg: msg
+  });
+}
+
+/**
+ * 关闭模态窗口
+ */
+function closeModal() {
+  this.setData( {
+    isModalShow: false,
+    isMaskShow: false,
+    modalMsg: ''
+  });
+}
+
+/**
+ * 关闭事项数据添加更新面板
+ */
 function closeUpdatePanel() {
   let animation = wx.createAnimation( {
     duration: 600
@@ -184,12 +233,26 @@ function closeUpdatePanel() {
   });
 }
 
+/**
+ * 加载事项列表数据
+ */
 function loadItemListData() {
   let year = this.data.data.showYear;
   let month = this.data.data.showMonth;
   let date = this.data.data.showDate;
-  let data = DataService.findByDate( new Date( Date.parse( year + '-' + month + '-' + date ) ) );
+  let data = DataService.findByDate( new Date( Date.parse( [year, month, date].join('-') ) ) );
   console.log( data );
+  this.setData( { itemList: data });
+}
+
+/**
+ * 重置是项列表勾选记录
+ */
+function resetItemListDataCheck() {
+  let data = this.data.itemList || [];
+  for( let i = 0, len = data.length;i < len;i++ ) {
+    data[ i ][ 'checked' ] = false;
+  }
   this.setData( { itemList: data });
 }
 

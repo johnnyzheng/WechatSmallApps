@@ -50,11 +50,15 @@
   </view>
 
   <view class="common-list">
+    <view class="header" wx:if="{{itemList.length > 0}}">
+      <text>事项信息</text>
+    </view>
+
     <block wx:for="{{itemList}}">
-      <view class="item" bindtap="listItemClickEvent" data-id="{{item._id}}">
+      <view class="item" bindtap="listItemClickEvent" data-id="{{item._id}}" bindlongtap="listItemLongTapEvent">
         <view class="inner {{isEditMode ? 'with-check' : ''}}">
           <view class="checker" wx:if="{{isEditMode}}">
-            <icon type="circle" wx:if="{{!item.active}}" color="#FFF" size="20" />
+            <icon type="circle" wx:if="{{!item.checked}}" color="#FFF" size="20" />
             <icon type="success" wx:else color="#E14848" size="20" />
           </view>
           <image wx:if="{{item.level == 1}}" class="icon" src="../../images/success.png" />
@@ -66,6 +70,10 @@
         </view>
       </view>
     </block> 
+
+    <view class="header text-center" wx:if="{{!itemList || itemList.length <= 0}}">
+      <text>当前日期没有事项记录</text>
+    </view>
     <!--<view class="item">
       <view class="inner {{isEditMode ? 'with-check' : ''}}">
         <view class="checker" wx:if="{{isEditMode}}">
@@ -93,15 +101,19 @@
 
   <!--float actions-->
   <view class="float-container">
-    <view class="float-action" bindtap="showUpdatePanelEvent">
+    <view class="float-action">
+      <image src="../../images/setting.png" />
+    </view>
+
+    <view class="float-action" bindtap="showUpdatePanelEvent" wx:if="{{!isEditMode}}">
       <image src="../../images/plus.png" />
     </view>
 
-    <view class="float-action operate" bindtap="editClickEvent" wx:if="{{!isEditMode}}">
+    <view class="float-action operate" bindtap="editClickEvent" wx:if="{{!isEditMode && itemList.length > 0}}">
       <image src="../../images/edit.png" />
     </view>
 
-    <view class="float-action operate" wx:if="{{isEditMode}}">
+    <view class="float-action operate" wx:if="{{isEditMode}}" bindtap="removeRangeTapEvent">
       <image src="../../images/remove.png" />
     </view>
 
@@ -138,9 +150,9 @@
   </view>
 </view>
 
-<action-sheet hidden="{{!isSelectLevelASShow}}">
-  <action-sheet-item class="actionItem"><icon type="success" color="#46BC62" size="20" />普通</action-sheet-item>
-  <action-sheet-item class="actionItem"><icon type="success" color="#ECAA5B" size="20" />重要</action-sheet-item>
-  <action-sheet-item class="actionItem"><icon type="success" color="#E14848" size="20" />紧急</action-sheet-item>
-  <action-sheet-cancel class="cancel">取消</action-sheet-cancel>
+<action-sheet hidden="{{!isSelectLevelASShow}}" bindchange="actionSheetChange">
+  <action-sheet-item class="actionItem">未完成</action-sheet-item>
+  <action-sheet-item class="actionItem">已完成</action-sheet-item>
+  <action-sheet-item class="actionItem color-danger">删除</action-sheet-item>
+  <action-sheet-cancel class="actionItem cancel">取消</action-sheet-cancel>
 </action-sheet>

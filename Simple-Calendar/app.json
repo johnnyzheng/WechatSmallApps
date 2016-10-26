@@ -6,7 +6,7 @@
   "window":{
     "backgroundTextStyle":"light",
     "navigationBarBackgroundColor": "#E14848",
-    "navigationBarTitleText": "Simple Calendar",
+    "navigationBarTitleText": "事项助手",
     "navigationBarTextStyle":"white"
   }
 }
