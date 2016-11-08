@@ -30,7 +30,8 @@
     border-top: 2rpx solid #333;
     margin: 0 40rpx;  
     padding: 20rpx 0;
-    color: #AAA
+    color: #AAA;
+    font-size: 30rpx;
 }
 
 .common-list .item .icon {
@@ -66,7 +67,7 @@
     white-space:nowrap;
     text-overflow: ellipsis;
     font-weight: lighter;
-    font-size: 30rpx;
+    font-size: 32rpx;
     margin-top: 30rpx;
 }
 
@@ -166,11 +167,16 @@
     padding: 20rpx 0;
     margin-bottom: 20rpx;
 }
-.updatePanel input {
-    background: #333333;
-    border-radius: 8rpx;
+.updatePanel input,
+.updatePanel textarea {
+    background: #222;
     padding: 20rpx;
-    font-size: 40rpx;
+    font-size: 36rpx;
+    width: auto;
+    color: #CCC;
+}
+.updatePanel textarea {
+    border-top: 2rpx solid #333;
 }
 
 .updatePanel .level {
@@ -205,6 +211,7 @@
     text-align: center;
     line-height: 100rpx;
     font-size: 36rpx;
+    color: #DDD;
 }
 .updatePanel .footer .btn:active {
     background: #333;

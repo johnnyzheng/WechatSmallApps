@@ -37,7 +37,7 @@
       </view>
     </view>
     <view class="body row">
-      <block wx:for="{{data.dates}}">
+      <block wx:for="{{data.dates}}" wx:key="_id">
         <view bindtap="dateClickEvent" data-year="{{item.year}}" data-month="{{item.month}}" data-date="{{item.date}}" class="col {{data.showMonth == item.month ? '' : 'old'}} {{data.currentDate == item.date && data.currentYear==item.year && data.currentMonth == item.month ? 'current' : ''}} {{item.active ? 'active' : ''}}">
           <text>{{item.date}}</text>
         </view>
@@ -49,12 +49,15 @@
     <text>{{data.showYear}}年{{data.showMonth > 9 ? data.showMonth : '0' + data.showMonth}}月{{data.showDate > 9 ? data.showDate : '0' + data.showDate}}日</text>
   </view>
 
+  <view class="userinfo">
+    <!--<image src="" />-->
+  </view>
   <view class="common-list">
     <view class="header" wx:if="{{itemList.length > 0}}">
       <text>事项信息</text>
     </view>
 
-    <block wx:for="{{itemList}}">
+    <block wx:for="{{itemList}}" wx:key="id">
       <view class="item" bindtap="listItemClickEvent" data-id="{{item._id}}" bindlongtap="listItemLongTapEvent">
         <view class="inner {{isEditMode ? 'with-check' : ''}}">
           <view class="checker" wx:if="{{isEditMode}}">
@@ -65,7 +68,7 @@
           <image wx:if="{{item.level == 2}}" class="icon" src="../../images/notice.png" />
           <image wx:if="{{item.level == 3}}" class="icon" src="../../images/fav-round.png" />
           <view class="content">
-            <text class="title">{{item.content}}</text>
+            <text class="title">{{item.title}}</text>
           </view>
         </view>
       </view>
@@ -101,9 +104,9 @@
 
   <!--float actions-->
   <view class="float-container">
-    <view class="float-action">
+    <!--<view class="float-action">
       <image src="../../images/setting.png" />
-    </view>
+    </view>-->
 
     <view class="float-action" bindtap="showUpdatePanelEvent" wx:if="{{!isEditMode}}">
       <image src="../../images/plus.png" />
@@ -113,7 +116,7 @@
       <image src="../../images/edit.png" />
     </view>
 
-    <view class="float-action operate" wx:if="{{isEditMode}}" bindtap="removeRangeTapEvent">
+    <view class="float-action operate" wx:if="{{isEditMode && editItemList.length > 0}}" bindtap="removeRangeTapEvent">
       <image src="../../images/remove.png" />
     </view>
 
@@ -138,9 +141,10 @@
 
 <view class="updatePanel" style="top: {{updatePanelTop}}px;height:{{updatePanelTop}}px" animation="{{updatePanelAnimationData}}">
   <!--<view class="title"><text>添加事项</text></view>-->
-  <input placeholder="请输入事项内容" bindchange="todoInputChangeEvent" />
+  <input placeholder="请输入事项标题" bindchange="todoInputChangeEvent" />
+  <textarea placeholder="请输入事项内容" bindchange="todoTextAreaChangeEvent"></textarea>
   <view class="level">
-    <block wx:for="{{levelSelectData}}">
+    <block wx:for="{{levelSelectData}}" wx:key="*this">
       <view bindtap="levelClickEvent" data-level="{{item}}" class="item {{item == 1 ? 'border-normal' : ''}} {{item == 2 ? 'border-warning' : '' }} {{item == 3 ? 'border-danger' : ''}} {{item == levelSelectedValue && item == 1 ? 'bg-normal' : ''}} {{item == levelSelectedValue && item == 2 ? 'bg-warning' : ''}} {{item == levelSelectedValue && item == 3 ? 'bg-danger' : ''}}"></view>
     </block>
   </view>

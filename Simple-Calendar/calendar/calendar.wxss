@@ -39,8 +39,6 @@
     border-bottom: 2rpx solid #333;
 }
 
-.og-calendar .row {
-}
 .og-calendar .col {
     width: 14.28571428571429%;
     display: inline-flex;

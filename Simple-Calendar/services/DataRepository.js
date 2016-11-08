@@ -6,20 +6,18 @@ class DataRepository {
     /**
      * 添加数据
      * @param {Object} 添加的数据
-     * @returns {Booelan} 是否添加成功
+     * @returns {Void} 
      */
-    static addData( data ) {
-        if( !data ) return false;
-        data[ '_id' ] = guid();
+    static addData(data) {
+        if (!data) return false;
+        data['_id'] = guid();
         let allData = DataRepository.findAllData();
         allData = allData || [];
-        allData.unshift( data );
+        allData.unshift(data);
         try {
-            wx.setStorageSync( Config.ITEMS_SAVE_KEY, allData );
-            return true;
-        } catch( e ) {
-            console.log( e );
-            return false;
+            wx.setStorageSync(Config.ITEMS_SAVE_KEY, allData);
+        } catch (e) {
+            console.log(e);
         }
     }
 
@@ -28,52 +26,69 @@ class DataRepository {
      * @param {string} id 数据项idid
      * @returns {Void}
      */
-    static removeData( id, isAll ) {
+    static removeData(id, isAll) {
         let data = DataRepository.findAllData();
-        if( !data ) return;
-        for( let idx = 0, len = data.length;i < len;i++ ) {
-            if( data[ i ] && data[ i ][ '_id' ] === id ) {
-                delete data[ i ];
-                if( !isAll ) return;
+        if (!data) return;
+        for (let idx = 0, len = data.length; idx < len; idx++) {
+            if (data[idx] && data[idx]['_id'] === id) {
+                delete data[idx];
+                if (!isAll) break;
             }
+        }
+        try {
+            wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
+        } catch (e) {
+            console.log(e);
         }
     }
 
-    static removeRange( ...range ) {
-        if( !range ) return;
+    /**
+     * 批量删除数据
+     * @param {Array} range id集合
+     * @returns {Void}
+     */
+    static removeRange(...range) {
+        if (!range) return;
         let data = DataRepository.findAllData();
-        if( !data ) return;
-        for( let rIdx = 0, rLen = range.length;rIdx < len;rIdx++ ) {
-            for( let idx = 0, len = data.length;i < len;i++ ) {
-                if( data[ i ] && data[ i ][ '_id' ] === range[ rIdx ] ) {
-                    delete data[ i ];
+        if (!data) return;
+        let indexs = [];
+        for (let rIdx = 0, rLen = range.length; rIdx < len; rIdx++) {
+            for (let idx = 0, len = data.length; i < len; i++) {
+                if (data[i] && data[i]['_id'] === range[rIdx]) {
+                    indexs.push(i);
                     break;
                 }
             }
+        }
+        indexs.forEach(function (item) {
+            delete data[item];
+        });
+        try {
+            wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
+        } catch (e) {
+            console.log(e);
         }
     }
 
     /**
      * 更新数据
      * @param {Object} data 数据
-     * @returns {Boolean} 是否更新成功
+     * @returns {Void} 
      */
-    static saveData( data ) {
-        if( !data || !data[ '_id' ] ) return false;
+    static saveData(data) {
+        if (!data || !data['_id']) return false;
         let allData = DataRepository.findAllData();
-        if( !allData ) return false;
-        for( let idx = 0, len = allData.length;i < len;i++ ) {
-            if( allData[ i ] && allData[ i ][ '_id' ] === data[ '_id' ] ) {
-                allData[ i ] = data;
+        if (!allData) return false;
+        for (let idx = 0, len = allData.length; i < len; i++) {
+            if (allData[i] && allData[i]['_id'] === data['_id']) {
+                allData[i] = data;
                 break;
             }
         }
         try {
-            wx.setStorageSync( Config.ITEMS_SAVE_KEY, data );
-            return true;
-        } catch( e ) {
-            console.log( e );
-            return false;
+            wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
+        } catch (e) {
+            console.log(e);
         }
     }
 
@@ -82,7 +97,7 @@ class DataRepository {
      * @returns {Array} 数据
      */
     static findAllData() {
-        return wx.getStorageSync( Config.ITEMS_SAVE_KEY );
+        return wx.getStorageSync(Config.ITEMS_SAVE_KEY);
     }
 
     /**
@@ -90,11 +105,12 @@ class DataRepository {
      * @param {Function} 回调
      * @returns {Object} 查找到的数据项
      */
-    static findBy( predicate ) {
+    static findBy(predicate) {
         let data = DataRepository.findAllData();
-        if( data ) {
-            data = data.filter(( item ) => {
-                return predicate( item );
+        if (data) {
+            data = data.filter((item) => {
+                if (!item) return false;
+                return predicate(item);
             });
         }
         return data;

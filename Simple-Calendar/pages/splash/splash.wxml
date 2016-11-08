@@ -1,0 +1,6 @@
+<view id="container">
+
+    <image src="{{avatar}}" id="avatar" />
+
+    <image src="../../images/logo.png" id="logo" />
+</view>
