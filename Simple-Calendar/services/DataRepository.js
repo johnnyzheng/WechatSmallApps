@@ -1,5 +1,5 @@
 import Config from 'Config';
-import {guid} from '../utils/util';
+import {guid, log} from '../utils/util';
 
 class DataRepository {
 
@@ -17,7 +17,7 @@ class DataRepository {
         try {
             wx.setStorageSync(Config.ITEMS_SAVE_KEY, allData);
         } catch (e) {
-            console.log(e);
+            log(e);
         }
     }
 
@@ -38,7 +38,7 @@ class DataRepository {
         try {
             wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
         } catch (e) {
-            console.log(e);
+            log(e);
         }
     }
 
@@ -53,9 +53,9 @@ class DataRepository {
         if (!data) return;
         let indexs = [];
         for (let rIdx = 0, rLen = range.length; rIdx < len; rIdx++) {
-            for (let idx = 0, len = data.length; i < len; i++) {
-                if (data[i] && data[i]['_id'] === range[rIdx]) {
-                    indexs.push(i);
+            for (let idx = 0, len = data.length; idx < len; idx++) {
+                if (data[idx] && data[idx]['_id'] === range[rIdx]) {
+                    indexs.push(idx);
                     break;
                 }
             }
@@ -66,7 +66,7 @@ class DataRepository {
         try {
             wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
         } catch (e) {
-            console.log(e);
+            log(e);
         }
     }
 
@@ -88,7 +88,7 @@ class DataRepository {
         try {
             wx.setStorageSync(Config.ITEMS_SAVE_KEY, data);
         } catch (e) {
-            console.log(e);
+            log(e);
         }
     }
 

@@ -1,8 +1,11 @@
 import DataService from  '../../services/DataService';
 import {LEVEL} from '../../services/Config';
+import {promiseHandle, log} from '../../utils/util';
 
-let t = DataService.findAll();
-console.log(t);
+// let t = DataService.findAll();
+// console.log(t);
+
+// getApp().getUserInfo((d) => { console.log('sss', d) });
 
 Page({
   data: {
@@ -37,12 +40,10 @@ Page({
 
   onLoad() {
     let _this = this;
-    wx.getSystemInfo({
-      success: (data) => {
-        _this.setData({
-          updatePanelTop: data.windowHeight,
-        });
-      }
+    promiseHandle(wx.getSystemInfo).then((data) => {
+      _this.setData({
+        updatePanelTop: data.windowHeight
+      });
     });
     changeDate.call(this);
   },
@@ -112,20 +113,17 @@ Page({
     if (!isEditMode) {
       //this.setData({ isSelectLevelASShow: true }); //旧版本的actionsheet
       let itemList = ['删除'];
-      wx.showActionSheet({
-        itemList: itemList,
-        itemColor: '#2E2E3B',
-        success: (res) => {
+      promiseHandle(wx.showActionSheet, { itemList: itemList, itemColor: '#2E2E3B' })
+        .then((res) => {
           if (!res.cancel) {
             switch (itemList[res.tapIndex]) {
               case '删除':
-                new DataService({ _id: id}).delete();
+                new DataService({ _id: id }).delete();
                 loadItemListData.call(_this);
                 break;
             }
           }
-        }
-      });
+        });
     }
   },
 
@@ -176,6 +174,12 @@ Page({
       }).save();
       closeUpdatePanel.call(this);
       loadItemListData.call(this);
+      //清空表单
+      this.setData({
+        todoTextAreaValue: '',
+        levelSelectedValue: '',
+        todoInputValue: ''
+      });
     } else {
       showModal.call(this, '请填写事项内容');
     }
@@ -209,6 +213,16 @@ Page({
     });
     if (index >= 0) {
       data[index]['checked'] = !data[index]['checked'];
+      let tIndx = editItemList.findIndex((item) => {
+        return item == id;
+      });
+      if (data[index]['checked']) {
+        console.log(tIndx);
+        tIndx >= 0 || editItemList.push(id);
+      } else {
+        editItemList.splice(tIndx, 1);
+      }
+      console.log('editItemList', editItemList);
       this.setData({ itemList: data });
     }
   },

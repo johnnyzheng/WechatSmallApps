@@ -49,6 +49,14 @@ class DataSerivce {
     }
 
     /**
+     * 批量删除数据
+     * @param {Array} ids 事项Id集合
+     */
+    static deleteRange(...ids) {
+        DataRepository.removeRange(ids);
+    }
+
+    /**
      * 根据日期查找所有符合条件的事项记录
      * @param {Date} date 日期对象
      * @returns {Array} 事项集合
