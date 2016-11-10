@@ -77,37 +77,11 @@
     <view class="header text-center" wx:if="{{!itemList || itemList.length <= 0}}">
       <text>当前日期没有事项记录</text>
     </view>
-    <!--<view class="item">
-      <view class="inner {{isEditMode ? 'with-check' : ''}}">
-        <view class="checker" wx:if="{{isEditMode}}">
-          <icon type="success" color="#E14848" size="20" />
-        </view>
-        <image class="icon" src="../../images/fav-round.png" />
-        <view class="content">
-          <text class="title">TODO 完成功能开发,提交代码到GitHub</text>
-        </view>
-      </view>
-    </view>
-    <view class="item">
-      <view class="inner {{isEditMode ? 'with-check' : ''}}">
-        <view class="checker" wx:if="{{isEditMode}}">
-          <icon type="circle" color="#FFF" size="20" />
-        </view>
-        <image class="icon" src="../../images/notice.png" />
-        <view class="content">
-          <text class="title">TODO 完成功能开发,提交代码到GitHub</text>
-        </view>
-      </view>
-    </view>-->
   </view>
 
 
   <!--float actions-->
   <view class="float-container">
-    <!--<view class="float-action">
-      <image src="../../images/setting.png" />
-    </view>-->
-
     <view class="float-action" bindtap="showUpdatePanelEvent" wx:if="{{!isEditMode}}">
       <image src="../../images/plus.png" />
     </view>
@@ -153,10 +127,3 @@
     <view class="btn primary" bindtap="saveDataEvent">保存</view>
   </view>
 </view>
-
-<action-sheet hidden="{{!isSelectLevelASShow}}" bindchange="actionSheetChange">
-  <action-sheet-item class="actionItem">未完成</action-sheet-item>
-  <action-sheet-item class="actionItem">已完成</action-sheet-item>
-  <action-sheet-item class="actionItem color-danger">删除</action-sheet-item>
-  <action-sheet-cancel class="actionItem cancel">取消</action-sheet-cancel>
-</action-sheet>

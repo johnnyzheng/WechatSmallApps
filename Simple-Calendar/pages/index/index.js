@@ -17,7 +17,6 @@ Page({
     isSelectMode: false,
     isMaskShow: false,
     isEditMode: false,
-    isSelectLevelASShow: false,
 
     // modal
     isModalShow: false,
@@ -53,26 +52,22 @@ Page({
   },
 
   datePickerChangeEvent(e) {
-    let date = new Date(Date.parse(e.detail.value));
+    const date = new Date(Date.parse(e.detail.value));
     changeDate.call(this, new Date(date.getFullYear(), date.getMonth(), 1));
   },
 
   changeDateEvent(e) {
-    let year = e.currentTarget.dataset.year;
-    let month = e.currentTarget.dataset.month;
+    const {year, month} = e.currentTarget.dataset;
     changeDate.call(this, new Date(year, parseInt(month) - 1, 1));
   },
 
   dateClickEvent(e) {
-    let dataset = e.currentTarget.dataset;
-    let year = dataset.year,
-      month = dataset.month,
-      date = dataset.date,
-      data = this.data.data
-      // dates,
-      // tmp,
-      // selectDateText
-      ;
+    const {year, month, date} = e.currentTarget.dataset;
+    const {data} = this.data;
+    // dates,
+    // tmp,
+    // selectDateText
+    ;
 
     // data[ 'selected' ][ 'year' ] = year;
     // data[ 'selected' ][ 'month' ] = month;
@@ -99,20 +94,14 @@ Page({
     this.setData({ isEditMode: true });
   },
 
-  // action-sheet隐藏
-  actionSheetChange() {
-    this.setData({ isSelectLevelASShow: false });
-  },
-
   // 事项列表项长按动作事件
   listItemLongTapEvent(e) {
-    let {isEditMode} = this.data;
-    let {id} = e.currentTarget.dataset;
+    const {isEditMode} = this.data;
+    const {id} = e.currentTarget.dataset;
     let _this = this;
     //如果不是编辑勾选模式下才生效
     if (!isEditMode) {
-      //this.setData({ isSelectLevelASShow: true }); //旧版本的actionsheet
-      let itemList = ['删除'];
+      const itemList = ['删除'];
       promiseHandle(wx.showActionSheet, { itemList: itemList, itemColor: '#2E2E3B' })
         .then((res) => {
           if (!res.cancel) {
@@ -133,43 +122,36 @@ Page({
     resetItemListDataCheck.call(this);
   },
 
-  showSelectLevelEvent() {
-    this.setData({ isSelectLevelASShow: true });
-  },
-
   // 事项标题文本框变化事件
   todoInputChangeEvent(e) {
-    let value = e.detail.value;
+    const {value} = e.detail;
     this.setData({ todoInputValue: value });
   },
 
   //事项内容多行文本域变化事件
   todoTextAreaChangeEvent(e) {
-    let value = e.detail.value;
-    this.setData({ todoInputValue: value });
+    const {value} = e.detail;
+    this.setData({ todoTextAreaValue: value });
   },
 
-  // 选择事项等级事件
+  // 选择事项等级事件  
   levelClickEvent(e) {
-    let level = e.currentTarget.dataset.level;
+    const {level} = e.currentTarget.dataset;
     this.setData({ levelSelectedValue: level });
   },
 
   // 保存事项数据
   saveDataEvent() {
-    let todoValue = this.data.todoInputValue;
-    let todoTextAreaValue = this.data.todoTextAreaValue;
-    let levelValue = this.data.levelSelectedValue;
-    let showYear = this.data.data.showYear;
-    let showMonth = parseInt(this.data.data.showMonth) - 1;
-    let showDate = this.data.data.showDate;
-    if (todoValue != '' && levelValue) {
+    const {todoInputValue, todoTextAreaValue, levelSelectedValue} = this.data;
+    const {showYear, showMonth, showDate} = this.data.data;
+    console.log(todoInputValue, todoTextAreaValue);
+    if (todoInputValue !== '') {
       new DataService({
-        title: todoValue,
+        title: todoInputValue,
         content: todoTextAreaValue,
-        level: levelValue,
+        level: levelSelectedValue,
         year: showYear,
-        month: showMonth,
+        month: parseInt(this.data.data.showMonth) - 1,
         date: showDate
       }).save();
       closeUpdatePanel.call(this);
@@ -187,7 +169,7 @@ Page({
 
   //批量删除事件
   removeRangeTapEvent() {
-    let itemList = this.data.itemList;
+    let {itemList} = this.data;
     if (!itemList) return;
 
     wx.showModal({
@@ -202,18 +184,19 @@ Page({
   },
 
   listItemClickEvent(e) {
-    let isEditMode = this.data.isEditMode;
+    const {isEditMode} = this.data;
     if (!isEditMode) return; //不是编辑勾选模式下，选择无效
 
-    let id = e.currentTarget.dataset.id;
+    const {id} = e.currentTarget.dataset;
     let data = this.data.itemList || [];
     let editItemList = this.data.editItemList || [];
-    let index = data.findIndex((item) => {
+    const index = data.findIndex((item) => {
       return item['_id'] == id;
     });
+
     if (index >= 0) {
       data[index]['checked'] = !data[index]['checked'];
-      let tIndx = editItemList.findIndex((item) => {
+      const tIndx = editItemList.findIndex((item) => {
         return item == id;
       });
       if (data[index]['checked']) {
@@ -222,7 +205,6 @@ Page({
       } else {
         editItemList.splice(tIndx, 1);
       }
-      console.log('editItemList', editItemList);
       this.setData({ itemList: data });
     }
   },
@@ -291,11 +273,8 @@ function closeUpdatePanel() {
  * 加载事项列表数据
  */
 function loadItemListData() {
-  let year = this.data.data.showYear;
-  let month = this.data.data.showMonth;
-  let date = this.data.data.showDate;
-  let data = DataService.findByDate(new Date(Date.parse([year, month, date].join('-'))));
-  console.log(data);
+  const {showYear, showMonth, showDate} = this.data.data;
+  const data = DataService.findByDate(new Date(Date.parse([showYear, showMonth, showDate].join('-'))));
   this.setData({ itemList: data });
 }
 
