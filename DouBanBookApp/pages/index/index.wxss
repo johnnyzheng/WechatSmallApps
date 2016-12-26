@@ -35,7 +35,7 @@ page {
 }
 .search-container icon {
   position: absolute;
-  z-index: 10;
+  z-index: 101;
   top: 50%;
   margin-top: -20rpx;
   right: 40rpx;
